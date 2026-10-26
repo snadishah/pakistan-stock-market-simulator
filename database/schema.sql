@@ -21,10 +21,18 @@ CREATE TABLE Portfolios (
 );
 
 -- ── Market ──────────────────────────────────────────────────
+-- Sector names live in their own table so they aren't repeated on every stock row (3NF).
+CREATE TABLE Sectors (
+    sector_id    INT AUTO_INCREMENT PRIMARY KEY,
+    sector_name  VARCHAR(60) NOT NULL UNIQUE
+);
+
 CREATE TABLE Stocks (
     symbol         VARCHAR(10)   PRIMARY KEY,
     company_name   VARCHAR(100)  NOT NULL,
-    current_price  DECIMAL(12,2) NOT NULL CHECK (current_price > 0)
+    sector_id      INT           NOT NULL,
+    current_price  DECIMAL(12,2) NOT NULL CHECK (current_price > 0),
+    FOREIGN KEY (sector_id) REFERENCES Sectors(sector_id)
 );
 
 -- ── Trading ─────────────────────────────────────────────────
@@ -109,17 +117,26 @@ CREATE TABLE Support_Tickets (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
--- ── Seed: PSX-listed companies (sample starting prices, PKR) ─
-INSERT INTO Stocks (symbol, company_name, current_price) VALUES
-    ('TRG',   'TRG Pakistan Ltd',                    55.00),
-    ('SYS',   'Systems Ltd',                        420.00),
-    ('OGDC',  'Oil & Gas Development Company',      210.00),
-    ('PPL',   'Pakistan Petroleum Ltd',             170.00),
-    ('HBL',   'Habib Bank Ltd',                     150.00),
-    ('MCB',   'MCB Bank Ltd',                       230.00),
-    ('MEBL',  'Meezan Bank Ltd',                    250.00),
-    ('LUCK',  'Lucky Cement Ltd',                   900.00),
-    ('ENGRO', 'Engro Corporation',                  330.00),
-    ('FFC',   'Fauji Fertilizer Company',           330.00),
-    ('HUBC',  'Hub Power Company',                  140.00),
-    ('PSO',   'Pakistan State Oil',                 380.00);
+-- ── Seed: PSX sectors and listed companies (sample starting prices, PKR) ─
+INSERT INTO Sectors (sector_id, sector_name) VALUES
+    (1, 'Technology & Communication'),
+    (2, 'Oil & Gas Exploration'),
+    (3, 'Commercial Banks'),
+    (4, 'Cement'),
+    (5, 'Fertilizer'),
+    (6, 'Power Generation & Distribution'),
+    (7, 'Oil & Gas Marketing');
+
+INSERT INTO Stocks (symbol, company_name, sector_id, current_price) VALUES
+    ('TRG',   'TRG Pakistan Ltd',                1,  55.00),
+    ('SYS',   'Systems Ltd',                     1, 420.00),
+    ('OGDC',  'Oil & Gas Development Company',   2, 210.00),
+    ('PPL',   'Pakistan Petroleum Ltd',          2, 170.00),
+    ('HBL',   'Habib Bank Ltd',                  3, 150.00),
+    ('MCB',   'MCB Bank Ltd',                    3, 230.00),
+    ('MEBL',  'Meezan Bank Ltd',                 3, 250.00),
+    ('LUCK',  'Lucky Cement Ltd',                4, 900.00),
+    ('ENGRO', 'Engro Corporation',               5, 330.00),
+    ('FFC',   'Fauji Fertilizer Company',        5, 330.00),
+    ('HUBC',  'Hub Power Company',               6, 140.00),
+    ('PSO',   'Pakistan State Oil',              7, 380.00);

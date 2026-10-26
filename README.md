@@ -6,10 +6,11 @@ Built as a Database Management Systems project at NUST.
 
 ## Highlights
 
-- **3NF relational schema.** 11 tables covering users, portfolios, holdings, transactions, trade history, watchlists, price alerts, chat, reviews and support tickets. They use composite keys, foreign-key cascades, `CHECK` constraints and covering indexes on the hot query paths. See [`database/schema.sql`](database/schema.sql).
+- **3NF relational schema.** 12 tables covering users, portfolios, holdings, transactions, trade history, stocks and their sectors, watchlists, price alerts, chat, reviews and support tickets. They use composite keys, foreign-key cascades, `CHECK` constraints and covering indexes on the hot query paths. See [`database/schema.sql`](database/schema.sql).
 - **Transactional trading.** Buys and sells update the wallet balance, holdings (with a weighted average buy price) and the transaction ledger together through JDBC prepared statements.
 - **Live market.** Prices move every second using a Gaussian random walk and roll up into OHLC candles drawn on a custom JavaFX candlestick chart with a moving-average overlay.
 - **Price alerts.** Above/below thresholds are evaluated on every tick and marked as triggered in the DB, so they fire only once.
+- **Search by sector.** The market list filters by symbol, company or PSX sector, with sectors joined in from their own table.
 - **Community features.** A global chat, app reviews with average rating, and support tickets.
 
 ## Tech stack
@@ -26,7 +27,7 @@ Built as a Database Management Systems project at NUST.
 ```
 Users ─┬─< Portfolios ─┬─< Holdings >── Stocks
        │               └─< Transactions
-       ├─< Trade_History >───────────── Stocks
+       ├─< Trade_History >───────────── Stocks >── Sectors
        ├─< Watchlists >──────────────── Stocks
        ├─< Price_Alerts >────────────── Stocks
        ├─< Chat_Messages

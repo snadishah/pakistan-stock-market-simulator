@@ -12,6 +12,7 @@ public class Stock {
 
     private final String symbol;       // Stock ticker symbol
     private final String companyName;  // Full company name
+    private final String sector;       // PSX sector, e.g. "Commercial Banks"
     private double price;              // Current market price
     private double previousClose;      // Previous closing price
     private double dayOpen;            // Opening price for current day
@@ -34,8 +35,13 @@ public class Stock {
     private final Random random = new Random();
 
     public Stock(String symbol, String companyName, double initialPrice) {
+        this(symbol, companyName, "", initialPrice);
+    }
+
+    public Stock(String symbol, String companyName, String sector, double initialPrice) {
         this.symbol = symbol;
         this.companyName = companyName;
+        this.sector = sector == null ? "" : sector;
         this.price = initialPrice;
         this.previousClose = initialPrice;
         this.dayOpen = initialPrice;
@@ -119,6 +125,7 @@ public class Stock {
 
     public String getSymbol() { return symbol; }
     public String getCompanyName() { return companyName; }
+    public String getSector() { return sector; }
     public double getPrice() { return price; }
     public double getPreviousClose() { return previousClose; }
     public double getDayOpen() { return dayOpen; }

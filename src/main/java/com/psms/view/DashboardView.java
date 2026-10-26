@@ -49,7 +49,7 @@ import javafx.util.Duration;
  * Main dashboard view — Dark Navy + Electric Blue layout with trading features.
  * Layout: BorderPane with left panel (market + watchlist), center (charts),
  * right panel (profile + news + reviews), bottom (trading + portfolio).
- * Chat, History, Predictions, Wallet, Support are in separate windows.
+ * Chat, History, Wallet, Support are in separate windows.
  */
 public class DashboardView {
 
@@ -182,14 +182,6 @@ public class DashboardView {
             new TradeHistoryWindow(stage, tradeHistory, backToDashboard).show();
         });
 
-        /* 
-        Button predictBtn = createSmallButton("🔮 Predictions");
-        predictBtn.setOnAction(e -> {
-            if (updateTimeline != null) updateTimeline.stop();
-            new PredictionWindow(stage, market, backToDashboard).show();
-        });
-        */
-
         Button walletBtn = createSmallButton("💰 Wallet");
         walletBtn.setOnAction(e -> {
             if (updateTimeline != null) updateTimeline.stop();
@@ -231,7 +223,7 @@ public class DashboardView {
             new LoginView(stage, session, () -> new DashboardView(stage, session).show()).show();
         });
 
-        topBar.getChildren().addAll(logo, chatBtn, historyBtn, /*predictBtn */ walletBtn, supportBtn,
+        topBar.getChildren().addAll(logo, chatBtn, historyBtn, walletBtn, supportBtn,
                 spacer, userLabel, balanceLabel, themeBtn, exportBtn, logoutBtn);
         return topBar;
     }
@@ -874,7 +866,8 @@ public class DashboardView {
             Stock stock = market.getStock(symbol);
             if (filter != null && !filter.isEmpty() &&
                     !symbol.toLowerCase().contains(filter.toLowerCase()) &&
-                    !stock.getCompanyName().toLowerCase().contains(filter.toLowerCase())) {
+                    !stock.getCompanyName().toLowerCase().contains(filter.toLowerCase()) &&
+                    !stock.getSector().toLowerCase().contains(filter.toLowerCase())) {
                 continue;
             }
 
@@ -975,7 +968,8 @@ public class DashboardView {
         Stock stock = market.getStock(selectedStock);
         if (stock == null) return;
 
-        selectedStockName.setText(stock.getSymbol() + " — " + stock.getCompanyName());
+        selectedStockName.setText(stock.getSymbol() + " — " + stock.getCompanyName()
+                + (stock.getSector().isEmpty() ? "" : "  ·  " + stock.getSector()));
         selectedStockPrice.setText(String.format("%.2f PKR", stock.getPrice()));
 
         double change = stock.getChangePercent();

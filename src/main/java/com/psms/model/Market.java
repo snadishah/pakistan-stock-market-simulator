@@ -19,10 +19,11 @@ public class Market {
     }
 
     /**
-     * Pulls every single stock from the MySQL 'Stocks' table and adds it to the live market.
+     * Pulls every single stock (with its sector) from MySQL and adds it to the live market.
      */
     private void loadMarketFromDatabase() {
-        String query = "SELECT symbol, company_name, current_price FROM Stocks";
+        String query = "SELECT s.symbol, s.company_name, s.current_price, sec.sector_name " +
+                       "FROM Stocks s JOIN Sectors sec ON s.sector_id = sec.sector_id";
         
         try (Connection conn = DatabaseHelper.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
@@ -32,9 +33,10 @@ public class Market {
                 String symbol = rs.getString("symbol");
                 String name = rs.getString("company_name");
                 double price = rs.getDouble("current_price");
+                String sector = rs.getString("sector_name");
 
                 // Creates a new stock object using data from the database
-                Stock stock = new Stock(symbol, name, price);
+                Stock stock = new Stock(symbol, name, sector, price);
                 stocks.put(symbol, stock);
             }
             System.out.println("✅ Market loaded successfully from Database! Total Stocks: " + stocks.size());
